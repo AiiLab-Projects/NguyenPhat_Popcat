@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Popcat Vui Nhộn - Thử thách bấm nhanh cùng mèo Oatmeal. Bấm càng nhanh càng nhiều điểm!">
+<title>Popcat Vui Nhộn - Thử Thách Bấm Nhanh Cùng Mèo Oatmeal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg-1: #1b1035;
+    --bg-2: #2d1b57;
+    --accent: #ffb347;
+    --card: rgba(255, 255, 255, 0.07);
+    --score-color: #fffdf5;
+    --glow: rgba(255, 253, 245, 0.45);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { min-height: 100%; }
+
+  body {
+    font-family: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(1000px 600px at 15% -10%, #45218a55, transparent 60%),
+      radial-gradient(900px 700px at 110% 20%, #ff7eb333, transparent 55%),
+      linear-gradient(160deg, var(--bg-1), var(--bg-2) 60%, #150c2b);
+    background-attachment: fixed;
+    color: #f4efff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  /* ---------- HEADER ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px clamp(12px, 3vw, 28px);
+    background: rgba(12, 6, 28, 0.55);
+    backdrop-filter: blur(8px);
+    border-bottom: 2px solid #ffffff1a;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .topbar h1 {
+    font-size: clamp(17px, 2.6vw, 26px);
+    line-height: 1.2;
+    letter-spacing: 0.3px;
+    text-shadow: 0 2px 10px #00000080;
+  }
+
+  .topbar h1 span {
+    display: block;
+    font-size: 0.62em;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .controls { display: flex; gap: 10px; flex-shrink: 0; }
+
+  .icon-btn {
+    font-size: 22px;
+    width: 50px;
+    height: 50px;
+    border: 2px solid #ffffff33;
+    border-radius: 16px;
+    background: #ffffff14;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+    display: grid;
+    place-items: center;
+    line-height: 1;
+  }
+
+  .icon-btn:hover { background: #ffffff26; border-color: #ffffff66; transform: translateY(-2px); }
+  .icon-btn:active { transform: scale(0.92); }
+  .icon-btn.muted { opacity: 0.55; }
+  .icon-btn.armed { background: #e53e3ecc; border-color: #ff8a8a; }
+
+  /* ---------- SCOREBOARD ---------- */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(10px, 2.5vh, 24px) 12px 0;
+  }
+
+  .scoreboard { text-align: center; user-select: none; }
+
+  .score-label {
+    font-size: clamp(11px, 1.6vw, 14px);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #cbb8ff;
+  }
+
+  .score {
+    font-size: clamp(64px, min(15vw, 16vh), 170px);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--score-color);
+    text-shadow: 0 0 26px var(--glow), 0 6px 18px #00000066;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.35s ease;
+    will-change: transform;
+  }
+
+  .score.bump { animation: bump 0.16s ease-out; }
+
+  @keyframes bump {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.09); }
+    100% { transform: scale(1); }
+  }
+
+  .best-line {
+    margin-top: 2px;
+    font-size: clamp(13px, 2vw, 17px);
+    color: #ffd98a;
+  }
+
+  .best-line strong { font-size: 1.25em; }
+
+  /* ---------- STAGE (cat) ---------- */
+  .stage {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: clamp(4px, 1.5vh, 16px);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    outline: none;
+    padding-bottom: 6px;
+  }
+
+  .cat {
+    width: min(74vw, 58vh, 540px);
+    height: auto;
+    max-height: 62vh;
+    display: block;
+    filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.45));
+    transition: transform 0.09s ease-out;
+    pointer-events: none;
+  }
+
+  .stage:active .cat { transform: scale(0.975); }
+
+  .cat .mouth-open, .cat .eyes-squint { display: none; }
+  .cat.is-open .mouth-open { display: block; animation: jaw 0.12s ease-out; }
+  .cat.is-open .mouth-closed { display: none; }
+  .cat.is-open .eyes-open { display: none; }
+  .cat.is-open .eyes-squint { display: block; }
+
+  @keyframes jaw {
+    from { transform: scale(0.6); transform-origin: 200px 270px; }
+    to { transform: scale(1); transform-origin: 200px 270px; }
+  }
+
+  .hint {
+    margin-top: 6px;
+    font-size: clamp(13px, 2vw, 17px);
+    color: #d9ccff;
+    background: #ffffff10;
+    border: 1px dashed #ffffff33;
+    border-radius: 999px;
+    padding: 7px 18px;
+  }
+
+  .plus {
+    position: absolute;
+    font-weight: 900;
+    font-size: clamp(20px, 3.4vw, 32px);
+    color: #ffe27a;
+    text-shadow: 0 2px 8px #000000aa;
+    pointer-events: none;
+    animation: floatUp 0.75s ease-out forwards;
+    z-index: 5;
+  }
+
+  @keyframes floatUp {
+    from { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    to   { opacity: 0; transform: translate(-50%, -80px) scale(1.5); }
+  }
+
+  .toast {
+    position: absolute;
+    top: 6%;
+    left: 50%;
+    transform: translate(-50%, -12px);
+    background: linear-gradient(135deg, #ffb347, #ff7eb3);
+    color: #2b1500;
+    font-weight: 800;
+    font-size: clamp(14px, 2.4vw, 20px);
+    padding: 10px 22px;
+    border-radius: 999px;
+    box-shadow: 0 8px 24px #00000066;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    white-space: nowrap;
+    z-index: 8;
+    max-width: 92%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  .confetti {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 6;
+  }
+
+  .confetti i {
+    position: absolute;
+    top: -4%;
+    width: 10px;
+    height: 16px;
+    border-radius: 3px;
+    animation: drop 1.5s ease-in forwards;
+  }
+
+  @keyframes drop {
+    to { transform: translateY(120vh) rotate(720deg); opacity: 0.2; }
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    margin-top: clamp(8px, 2vh, 20px);
+    background: rgba(10, 5, 24, 0.72);
+    border-top: 2px solid #ffffff1a;
+    padding: 16px clamp(12px, 3vw, 28px) 22px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .howto { flex: 1 1 320px; min-width: 280px; }
+
+  footer h2 {
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .howto ul { list-style: none; font-size: 14.5px; line-height: 1.75; color: #ded4ff; }
+  .howto li::before { content: "🐾 "; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+  .chip {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #ffffff12;
+    border: 1px solid #ffffff22;
+  }
+
+  .board { flex: 0 1 300px; min-width: 260px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+
+  th, td { padding: 7px 12px; text-align: left; }
+
+  thead th {
+    color: #b9a8ee;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ffffff26;
+  }
+
+  tbody tr { border-bottom: 1px dashed #ffffff14; }
+  tbody tr:first-child td { color: #ffd75e; font-weight: 800; }
+  tbody td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .empty-note { font-size: 13.5px; color: #a99cc9; padding-top: 8px; }
+
+  .clear-btn {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #ffb3b3;
+    background: transparent;
+    border: 1px solid #ff8a8a55;
+    border-radius: 10px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .clear-btn:hover { background: #ff555522; }
+  .clear-btn.armed { background: #e53e3ecc; color: #fff; border-color: #ff8a8a; }
+
+  @media (max-width: 640px) {
+    .topbar { position: static; }
+    .cat { width: min(88vw, 460px); max-height: 52vh; }
+    footer { flex-direction: column; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>🐱 Popcat Vui Nhộn<span>Thử Thách Bấm Nhanh Cùng Mèo Oatmeal</span></h1>
+  <div class="controls">
+    <button id="soundBtn" class="icon-btn" aria-pressed="true" title="Bật/tắt âm thanh" aria-label="Bật tắt âm thanh">🔊</button>
+    <button id="resetBtn" class="icon-btn" title="Đặt lại điểm (ghi điểm vào bảng)" aria-label="Đặt lại điểm">🔄</button>
+  </div>
+</header>
+
+<main>
+  <section class="scoreboard" aria-live="off">
+    <div class="score-label">Điểm của bạn</div>
+    <div id="score" class="score">0</div>
+    <div class="best-line">Kỷ lục: <strong id="best">0</strong> 🔥</div>
+  </section>
+
+  <section id="stage" class="stage" role="button" tabindex="0"
+           aria-label="Nhấn để mèo Oatmeal Pop, cộng một điểm">
+    <svg class="cat" id="cat" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="fur" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffcf8f"/>
+          <stop offset="1" stop-color="#f39a3e"/>
+        </linearGradient>
+        <linearGradient id="mouthGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#6d2b3d"/>
+          <stop offset="1" stop-color="#4a1826"/>
+        </linearGradient>
+      </defs>
+
+      <!-- tai -->
+      <path d="M108 150 L78 48 L178 100 Z" fill="url(#fur)" stroke="#e8892f" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M292 150 L322 48 L222 100 Z" fill="url(#fur)" stroke="#e8892f" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M112 132 L97 74 L156 106 Z" fill="#f8c9b0"/>
+      <path d="M288 132 L303 74 L244 106 Z" fill="#f8c9b0"/>
+
+      <!-- đầu -->
+      <ellipse cx="200" cy="225" rx="152" ry="150" fill="url(#fur)"/>
+      <!-- vằn trán -->
+      <g stroke="#e8892f" stroke-width="12" stroke-linecap="round" fill="none">
+        <path d="M168 112 C172 132 170 148 166 164"/>
+        <path d="M200 104 C200 128 200 146 200 162"/>
+        <path d="M232 112 C228 132 230 148 234 164"/>
+      </g>
+
+      <!-- mõm -->
+      <ellipse cx="200" cy="275" rx="92" ry="62" fill="#fff8ee"/>
+
+      <!-- mắt mở (miệng ngậm) -->
+      <g class="eyes-open">
+        <ellipse cx="152" cy="205" rx="17" ry="22" fill="#2c2320"/>
+        <ellipse cx="248" cy="205" rx="17" ry="22" fill="#2c2320"/>
+        <circle cx="158" cy="197" r="6" fill="#ffffff" opacity="0.9"/>
+        <circle cx="254" cy="197" r="6" fill="#ffffff" opacity="0.9"/>
+      </g>
+
+      <!-- mắt híp (miệng há) -->
+      <g class="eyes-squint" stroke="#2c2320" stroke-width="10" stroke-linecap="round" fill="none">
+        <path d="M134 212 q18 -24 36 0"/>
+        <path d="M230 212 q18 -24 36 0"/>
+      </g>
+
+      <!-- mũi -->
+      <path d="M186 248 L214 248 L200 264 Z" fill="#e8748f" stroke="#e8748f" stroke-width="7" stroke-linejoin="round"/>
+
+      <!-- miệng ngậm -->
+      <g class="mouth-closed" stroke="#7a513a" stroke-width="7" stroke-linecap="round" fill="none">
+        <path d="M200 266 C200 288 180 296 166 284"/>
+        <path d="M200 266 C200 288 220 296 234 284"/>
+      </g>
+
+      <!-- miệng há -->
+      <g class="mouth-open">
+        <ellipse cx="200" cy="320" rx="64" ry="54" fill="url(#mouthGrad)"/>
+        <path d="M174 274 l14 0 l-7 18 z" fill="#fffdf5"/>
+        <path d="M226 274 l14 0 l-7 18 z" fill="#fffdf5"/>
+        <ellipse cx="200" cy="352" rx="40" ry="18" fill="#ff7f95"/>
+      </g>
+
+      <!-- râu -->
+      <g stroke="#8a5a2b" stroke-width="5" stroke-linecap="round" opacity="0.85" fill="none">
+        <path d="M118 258 L16 238"/>
+        <path d="M114 278 L10 282"/>
+        <path d="M120 298 L20 324"/>
+        <path d="M282 258 L384 238"/>
+        <path d="M286 278 L390 282"/>
+        <path d="M280 298 L380 324"/>
+      </g>
+    </svg>
+
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
+    <div class="toast" id="toast" role="status"></div>
+    <p class="hint">👆 Click / chạm màn hình / bấm phím bất kỳ để Pop!</p>
+  </section>
+</main>
+
+<footer>
+  <div class="howto">
+    <h2>Cách chơi</h2>
+    <ul>
+      <li>Click chuột, chạm màn hình hoặc bấm phím bất kỳ — mỗi lần bấm = <strong>1 điểm</strong>.</li>
+      <li>Chạm mèo Oatmeal để nghe tiếng "Pop! Pop!" vui nhộn.</li>
+      <li>🔊 bật/tắt âm thanh · 🔄 đặt lại điểm và ghi điểm vào bảng (nếu &gt; 0).</li>
+      <li>Reo hòn chạy nhanh tay — điểm đạt mốc sẽ đổi màu rực rỡ!</li>
+    </ul>
+    <div class="chips" id="chips" aria-label="Các mốc đổi màu điểm"></div>
+  </div>
+
+  <div class="board">
+    <h2>🏆 Bảng kỷ lục (Top 5)</h2>
+    <table>
+      <thead>
+        <tr><th>Hạng</th><th style="text-align:right">Điểm</th></tr>
+      </thead>
+      <tbody id="scoreRows"></tbody>
+    </table>
+    <p class="empty-note" id="emptyNote">Chưa có lượt nào — chơi rồi bấm 🔄 để ghi điểm nhé!</p>
+    <button class="clear-btn" id="clearBtn">Xóa kỷ lục</button>
+  </div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  const $ = (s) => document.querySelector(s);
+  const scoreEl = $("#score");
+  const bestEl = $("#best");
+  const stage = $("#stage");
+  const cat = $("#cat");
+  const toastEl = $("#toast");
+  const confettiEl = $("#confetti");
+  const soundBtn = $("#soundBtn");
+  const resetBtn = $("#resetBtn");
+  const clearBtn = $("#clearBtn");
+  const rowsEl = $("#scoreRows");
+  const emptyNote = $("#emptyNote");
+
+  const MILESTONES = [
+    { min: 100,  color: "#4ade80", name: "Xanh lá" },
+    { min: 250,  color: "#22d3ee", name: "Xanh dương" },
+    { min: 500,  color: "#fb923c", name: "Cam" },
+    { min: 1000, color: "#f472b6", name: "Hồng" },
+    { min: 2500, color: "#c084fc", name: "Tím" },
+    { min: 5000, color: "#facc15", name: "Vàng kim" },
+    { min: 10000,color: "#ef4444", name: "Đỏ son" }
+  ];
+  const DEFAULT_COLOR = "#fffdf5";
+  const DEFAULT_GLOW = "rgba(255,253,245,0.45)";
+  const MAX_TABLE = 5;
+
+  const KEY_BEST = "popcat.best";
+  const KEY_SCORES = "popcat.scores";
+  const KEY_MUTED = "popcat.muted";
+
+  const load = (k, d) => {
+    try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); }
+    catch (e) { return d; }
+  };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+
+  let score = 0;
+  let best = load(KEY_BEST, 0);
+  let muted = load(KEY_MUTED, false);
+  let topScores = load(KEY_SCORES, []);
+  if (!Array.isArray(topScores)) topScores = [];
+  topScores = topScores.filter((n) => Number.isFinite(n)).slice(0, MAX_TABLE);
+
+  let lastMilestone = null;
+  let openTimer = null;
+  let toastTimer = null;
+  let clearArmed = false;
+
+  /* ---------- ÂM THANH ---------- */
+  let ac = null;
+  let noiseBuf = null;
+  const NOTES = [0, 7, 4, 9, 12, 9, 7, 4];
+  let noteIdx = 0;
+
+  function audioCtx() {
+    if (!ac) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ac = new AC();
+    }
+    if (ac.state === "suspended") ac.resume().catch(() => {});
+    if (!noiseBuf) {
+      const len = Math.floor(ac.sampleRate * 0.05);
+      noiseBuf = ac.createBuffer(1, len, ac.sampleRate);
+      const data = noiseBuf.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    }
+    return ac;
+  }
+
+  function playPop() {
+    if (muted) return;
+    let ctx;
+    try { ctx = audioCtx(); } catch (e) { return; }
+    if (!ctx) return;
+    const t = ctx.currentTime;
+
+    const semi = NOTES[noteIdx++ % NOTES.length] + (Math.random() * 0.7 - 0.35);
+    const f = 300 * Math.pow(2, semi / 12);
+
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(f * 3.2, t);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(60, f * 0.9), t + 0.07);
+    g.gain.setValueAtTime(0.32, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+    osc.connect(g).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.15);
+
+    const src = ctx.createBufferSource();
+    src.buffer = noiseBuf;
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.value = 1400;
+    bp.Q.value = 1.2;
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(0.16, t);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    src.connect(bp).connect(ng).connect(ctx.destination);
+    src.start(t);
+  }
+
+  /* ---------- HIỂN THỊ ---------- */
+  function milestoneFor(s) {
+    let m = null;
+    for (const x of MILESTONES) if (s >= x.min) m = x;
+    return m;
+  }
+
+  function applyColor(m) {
+    const color = m ? m.color : DEFAULT_COLOR;
+    scoreEl.style.setProperty("--score-color", color);
+    scoreEl.style.color = color;
+    scoreEl.style.setProperty("--glow", m ? color + "88" : DEFAULT_GLOW);
+    document.documentElement.style.setProperty("--score-color", color);
+    document.documentElement.style.setProperty("--glow", m ? color + "88" : DEFAULT_GLOW);
+  }
+
+  function renderBest() { bestEl.textContent = best.toLocaleString("vi-VN"); }
+
+  function renderTable() {
+    rowsEl.innerHTML = "";
+    topScores.forEach((s, i) => {
+      const tr = document.createElement("tr");
+      const td1 = document.createElement("td");
+      const td2 = document.createElement("td");
+      td1.textContent = "#" + (i + 1);
+      td2.textContent = s.toLocaleString("vi-VN");
+      tr.append(td1, td2);
+      rowsEl.appendChild(tr);
+    });
+    emptyNote.style.display = topScores.length ? "none" : "block";
+  }
+
+  function renderChips() {
+    const box = $("#chips");
+    for (const m of MILESTONES) {
+      const c = document.createElement("span");
+      c.className = "chip";
+      c.textContent = m.min.toLocaleString("vi-VN") + " → " + m.name;
+      c.style.color = m.color;
+      c.style.borderColor = m.color + "66";
+      box.appendChild(c);
+    }
+  }
+
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+  }
+
+  function confetti() {
+    const colors = ["#ff7eb3", "#ffd75e", "#4ade80", "#22d3ee", "#c084fc", "#fb923c"];
+    for (let i = 0; i < 26; i++) {
+      const p = document.createElement("i");
+      p.style.left = Math.random() * 100 + "%";
+      p.style.background = colors[i % colors.length];
+      p.style.animationDelay = Math.random() * 0.35 + "s";
+      p.style.animationDuration = 1.1 + Math.random() * 0.9 + "s";
+      confettiEl.appendChild(p);
+      setTimeout(() => p.remove(), 2600);
+    }
+  }
+
+  function spawnPlus(x, y) {
+    const p = document.createElement("span");
+    p.className = "plus";
+    p.textContent = "+1";
+    if (typeof x === "number") { p.style.left = x + "px"; p.style.top = y + "px"; }
+    else { p.style.left = "50%"; p.style.top = "42%"; }
+    stage.appendChild(p);
+    setTimeout(() => p.remove(), 800);
+  }
+
+  function flashCat() {
+    cat.classList.add("is-open");
+    clearTimeout(openTimer);
+    openTimer = setTimeout(() => cat.classList.remove("is-open"), 130);
+    scoreEl.classList.remove("bump");
+    void scoreEl.offsetWidth;
+    scoreEl.classList.add("bump");
+  }
+
+  /* ---------- LUỘT CHƠI ---------- */
+  function pop(x, y) {
+    score++;
+    playPop();
+    flashCat();
+    spawnPlus(x, y);
+
+    const m = milestoneFor(score);
+    if (m !== lastMilestone) {
+      lastMilestone = m;
+      applyColor(m);
+      if (m) {
+        toast("🎉 Mốc " + m.min.toLocaleString("vi-VN") + " điểm — " + m.name + "!");
+        confetti();
+      }
+    }
+
+    if (score > best) {
+      best = score;
+      save(KEY_BEST, best);
+      renderBest();
+    }
+    scoreEl.textContent = score.toLocaleString("vi-VN");
+  }
+
+  function resetRound() {
+    if (score > 0) {
+      topScores.push(score);
+      topScores.sort((a, b) => b - a);
+      topScores = topScores.slice(0, MAX_TABLE);
+      save(KEY_SCORES, topScores);
+      renderTable();
+      toast("🏆 Đã ghi " + score.toLocaleString("vi-VN") + " điểm vào bảng kỷ lục!");
+    } else {
+      toast("Điểm đã là 0 rồi 😸");
+    }
+    score = 0;
+    lastMilestone = null;
+    applyColor(null);
+    scoreEl.textContent = "0";
+  }
+
+  /* ---------- SỰ KIỆN ---------- */
+  stage.addEventListener("pointerdown", (e) => {
+    const r = stage.getBoundingClientRect();
+    pop(e.clientX - r.left, e.clientY - r.top);
+  });
+
+  stage.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  document.addEventListener("keydown", (e) => {
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+    const onControl = e.target && e.target.closest && e.target.closest("button, a, input, textarea, select");
+    if (onControl) return;
+    if (e.key === "Tab" || e.key === "Escape" || /^F\d{1,2}$/.test(e.key)) return;
+
+    if ([" ", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(e.key)) {
+      e.preventDefault();
+    }
+    const r = stage.getBoundingClientRect();
+    pop(r.left + r.width / 2, r.top + r.height * 0.4);
+  });
+
+  soundBtn.addEventListener("click", () => {
+    muted = !muted;
+    save(KEY_MUTED, muted);
+    soundBtn.textContent = muted ? "🔇" : "🔊";
+    soundBtn.classList.toggle("muted", muted);
+    soundBtn.setAttribute("aria-pressed", String(!muted));
+    if (!muted) playPop();
+  });
+
+  resetBtn.addEventListener("click", resetRound);
+
+  clearBtn.addEventListener("click", () => {
+    if (!clearArmed) {
+      clearArmed = true;
+      clearBtn.classList.add("armed");
+      clearBtn.textContent = "Chắc chắn? Bấm lại để xóa";
+      setTimeout(() => {
+        clearArmed = false;
+        clearBtn.classList.remove("armed");
+        clearBtn.textContent = "Xóa kỷ lục";
+      }, 3000);
+      return;
+    }
+    clearArmed = false;
+    clearBtn.classList.remove("armed");
+    clearBtn.textContent = "Xóa kỷ lục";
+    topScores = [];
+    best = 0;
+    save(KEY_SCORES, topScores);
+    save(KEY_BEST, best);
+    renderTable();
+    renderBest();
+    toast("Đã xóa toàn bộ kỷ lục 🧹");
+  });
+
+  /* ---------- KHỞI TẠO ---------- */
+  soundBtn.textContent = muted ? "🔇" : "🔊";
+  soundBtn.classList.toggle("muted", muted);
+  soundBtn.setAttribute("aria-pressed", String(!muted));
+  applyColor(null);
+  renderBest();
+  renderTable();
+  renderChips();
+})();
+</script>
+</body>
+</html>
