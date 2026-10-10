@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thế Giới Của Con</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%8D%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --ink: #2b2d42;
+    --pink: #ff6f91;
+    --blue: #4cc9f0;
+    --yellow: #ffd166;
+    --mint: #06d6a0;
+    --purple: #9b5de5;
+    --card: #ffffff;
+    --radius: 26px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Comic Sans MS", "Chalkboard SE", "Baloo 2", "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    background: linear-gradient(180deg, #aee9ff 0%, #dff7ff 35%, #fff7d6 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ---------- trang trí nền ---------- */
+  .deco {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .deco span {
+    position: absolute;
+    font-size: 34px;
+    opacity: 0.5;
+    animation: floaty 9s ease-in-out infinite;
+  }
+
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50% { transform: translateY(-26px) rotate(8deg); }
+  }
+
+  /* ---------- header + nav ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #ffffffcc;
+    backdrop-filter: blur(8px);
+    border-bottom: 3px solid #ffffff;
+    padding: 12px clamp(12px, 4vw, 32px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 18px;
+    box-shadow: 0 6px 18px #2b2d4214;
+  }
+
+  .brand {
+    font-size: clamp(19px, 3vw, 26px);
+    font-weight: 800;
+    color: var(--purple);
+    text-shadow: 2px 2px 0 #ffe0ef;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: var(--ink);
+    background: #f1f5ff;
+    border: 2px solid #d7e3ff;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: transform 0.12s ease, background 0.15s ease;
+  }
+
+  nav a:hover { background: var(--yellow); border-color: #f4b942; transform: translateY(-2px); }
+
+  /* ---------- bố cục ---------- */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: clamp(18px, 4vw, 40px) clamp(14px, 4vw, 24px) 40px;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(18px, 3vw, 30px);
+  }
+
+  section {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: clamp(20px, 4vw, 34px);
+    box-shadow: 0 14px 30px #2b2d421a;
+    border: 3px solid #ffffff;
+    scroll-margin-top: 90px;
+  }
+
+  h2 {
+    font-size: clamp(20px, 3.4vw, 27px);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2 .badge {
+    font-size: 14px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 999px;
+    padding: 3px 12px;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+
+  .accent-pink  { border-top: 8px solid var(--pink); }
+  .accent-blue  { border-top: 8px solid var(--blue); }
+  .accent-mint  { border-top: 8px solid var(--mint); }
+  .accent-yellow{ border-top: 8px solid var(--yellow); }
+  .accent-purple{ border-top: 8px solid var(--purple); }
+
+  /* ---------- hero (phần đầu) ---------- */
+  .hero {
+    text-align: center;
+    background: linear-gradient(135deg, #ffffff, #fff3fb);
+    border-top: 8px solid var(--purple);
+  }
+
+  .hero h1 {
+    font-size: clamp(30px, 6vw, 52px);
+    color: var(--purple);
+    text-shadow: 3px 3px 0 #ffe0ef;
+    margin-bottom: 6px;
+  }
+
+  .hero .tagline { font-size: clamp(15px, 2.4vw, 19px); color: #556; }
+
+  .hero .wave { display: inline-block; animation: wave 2.4s ease-in-out infinite; transform-origin: 70% 70%; }
+
+  @keyframes wave {
+    0%, 60%, 100% { transform: rotate(0); }
+    70% { transform: rotate(18deg); }
+    80% { transform: rotate(-8deg); }
+    90% { transform: rotate(14deg); }
+  }
+
+  /* ---------- mục 1: tên tuổi & sở thích ---------- */
+  .name-box {
+    background: #f7fbff;
+    border: 3px dashed var(--blue);
+    border-radius: 18px;
+    padding: 14px 18px;
+    font-size: clamp(17px, 2.6vw, 22px);
+    margin-bottom: 14px;
+  }
+
+  .name-field {
+    color: var(--pink);
+    font-weight: 800;
+    outline: none;
+    border-bottom: 3px dotted var(--pink);
+    padding: 0 4px 2px;
+    min-width: 120px;
+    display: inline-block;
+    cursor: text;
+  }
+
+  .name-field:empty::before {
+    content: attr(data-placeholder);
+    color: #9bb;
+    font-weight: 400;
+    font-size: 0.85em;
+    border-bottom: none;
+  }
+
+  .name-field:focus { background: #fff3c4; border-radius: 6px; }
+
+  .hobbies { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; }
+
+  .hobbies li {
+    background: #fff8e1;
+    border: 2px solid var(--yellow);
+    border-radius: 999px;
+    padding: 8px 18px;
+    font-weight: 700;
+    font-size: clamp(15px, 2.4vw, 18px);
+    transition: transform 0.12s ease;
+  }
+
+  .hobbies li:hover { transform: translateY(-3px) rotate(-2deg); }
+
+  /* ---------- mục 2: quả bóng ---------- */
+  .ball-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 3vw, 26px);
+    flex-wrap: wrap;
+  }
+
+  .ball-btn {
+    font-size: clamp(64px, 12vw, 110px);
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    filter: drop-shadow(0 10px 12px #2b2d4233);
+    transition: transform 0.1s ease;
+    flex-shrink: 0;
+  }
+
+  .ball-btn:active { transform: scale(0.92); }
+
+  .ball-btn.bounce { animation: bounce 0.6s cubic-bezier(0.28, 0.84, 0.42, 1); }
+
+  @keyframes bounce {
+    0% { transform: translateY(0) scale(1, 1); }
+    25% { transform: translateY(-46px) scale(0.94, 1.08); }
+    50% { transform: translateY(0) scale(1.08, 0.9); }
+    70% { transform: translateY(-20px) scale(0.97, 1.04); }
+    100% { transform: translateY(0) scale(1, 1); }
+  }
+
+  .why { flex: 1 1 240px; }
+
+  .why ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+  .why li {
+    background: #f3fff9;
+    border-left: 6px solid var(--mint);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-weight: 700;
+  }
+
+  .tip { margin-top: 10px; font-size: 14px; color: #777; }
+
+  /* ---------- mục 3: ước mơ ---------- */
+  .dreams { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+
+  .dream {
+    border-radius: 18px;
+    padding: 16px 18px;
+    background: #fbf7ff;
+    border: 2px solid #e8dcff;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .dream:hover { transform: translateY(-4px); box-shadow: 0 12px 22px #9b5de533; }
+
+  .dream .emoji { font-size: 34px; display: block; margin-bottom: 6px; }
+
+  .dream h3 { font-size: 17px; margin-bottom: 4px; color: var(--purple); }
+
+  .dream p { font-size: 15px; color: #556; }
+
+  /* ---------- phần cuối ---------- */
+  .bye {
+    text-align: center;
+    background: linear-gradient(135deg, #fff, #f0fff9);
+    border-top: 8px solid var(--mint);
+  }
+
+  .bye p { font-size: clamp(16px, 2.6vw, 20px); }
+
+  .bye .big {
+    display: block;
+    margin-top: 12px;
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: 900;
+    color: var(--mint);
+    text-shadow: 2px 2px 0 #d9fff2;
+  }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 18px;
+    font-size: 14px;
+    color: #667;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deco" aria-hidden="true">
+  <span style="top:14%; left:6%;  animation-delay:0s">⚽</span>
+  <span style="top:28%; right:8%; animation-delay:1.2s">🎮</span>
+  <span style="top:52%; left:4%;  animation-delay:2.1s">☁️</span>
+  <span style="top:66%; right:5%; animation-delay:0.6s">🌟</span>
+  <span style="top:84%; left:12%; animation-delay:1.7s">😴</span>
+</div>
+
+<header>
+  <div class="brand">🌍 Thế Giới Của Con</div>
+  <nav aria-label="Mục lục">
+    <a href="#gioi-thieu">Giới thiệu</a>
+    <a href="#muc-1">Mục 1 · Tên &amp; sở thích</a>
+    <a href="#muc-2">Mục 2 · Điều con thích</a>
+    <a href="#muc-3">Mục 3 · Ước mơ</a>
+    <a href="#loi-chao">Lời chào</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- PHẦN ĐẦU: giới thiệu trang web -->
+  <section class="hero" id="gioi-thieu">
+    <h1>Thế Giới Của Con <span class="wave">👋</span></h1>
+    <p class="tagline">
+      Đây là <strong>trang web nhỏ của con</strong> — nơi con giới thiệu về thế giới của chính mình.
+      Ở đây bạn sẽ biết con là ai, con thích gì, và con ước mơ điều gì khi lớn lên.
+      Cùng khám phá thế giới của con nhé!
+    </p>
+  </section>
+
+  <!-- MỤC 1: giới thiệu tên tuổi và sở thích -->
+  <section class="accent-blue" id="muc-1">
+    <h2><span class="badge">MỤC 1</span>Giới thiệu tên tuổi &amp; sở thích</h2>
+
+    <div class="name-box">
+      Xin chào, mình là
+      <span class="name-field" id="nameField" contenteditable="true" spellcheck="false"
+            role="textbox" aria-label="Tên của con"
+            data-placeholder="[Nhập tên của con vào đây...]"></span>!
+      Rất vui được gặp bạn.
+    </div>
+
+    <p style="margin-bottom:10px; font-weight:700;">Sở thích của con là:</p>
+    <ul class="hobbies">
+      <li>⚽ Đá bóng</li>
+      <li>🎮 Chơi game</li>
+      <li>😴 Đi ngủ</li>
+    </ul>
+  </section>
+
+  <!-- MỤC 2: chia sẻ những điều con thích -->
+  <section class="accent-mint" id="muc-2">
+    <h2><span class="badge">MỤC 2</span>Những điều con thích</h2>
+
+    <div class="ball-row">
+      <button class="ball-btn" id="ball" aria-label="Bấm để quả bóng nhảy">⚽</button>
+      <div class="why">
+        <p style="margin-bottom:10px;">Con thích nhất là <strong>quả bóng</strong>, vì:</p>
+        <ul>
+          <li>Vì nó <strong>tròn</strong> ⭕</li>
+          <li>Vì nó mang lại niềm <strong>vui</strong> 😆</li>
+          <li>Vì đôi lúc nó cũng hơi <strong>phiền</strong> 🤪 — chạy theo mệt mà vẫn muốn đá tiếp!</li>
+        </ul>
+      </div>
+    </div>
+    <p class="tip">💡 Bấm vào quả bóng xem nó nhảy!</p>
+  </section>
+
+  <!-- MỤC 3: kể về ước mơ trong tương lai -->
+  <section class="accent-purple" id="muc-3">
+    <h2><span class="badge">MỤC 3</span>Ước mơ của con trong tương lai</h2>
+    <div class="dreams">
+      <div class="dream">
+        <span class="emoji">🍔😴</span>
+        <h3>Được ăn ngon &amp; ngủ đã</h3>
+        <p>Ăn thật nhiều món ngon rồi ngủ một giấc thật dài, không ai gọi dậy!</p>
+      </div>
+      <div class="dream">
+        <span class="emoji">🎮🎉</span>
+        <h3>Chơi game thả ga</h3>
+        <p>Được chơi game thoải mái mà… không phải học bài!</p>
+      </div>
+      <div class="dream">
+        <span class="emoji">🏅💪</span>
+        <h3>Làm vận động viên thể thao</h3>
+        <p>Lớn lên con muốn trở thành vận động viên, được chạy nhảy và giành huy chương.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHẦN CUỐI: lời chào và cảm ơn -->
+  <section class="bye" id="loi-chao">
+    <h2 style="justify-content:center;"><span class="badge">PHẦN CUỐI</span>Lời chào &amp; cảm ơn</h2>
+    <p>
+      Cảm ơn bạn đã ghé thăm và đọc hết <strong>thế giới của con</strong> 💚<br>
+      Con chúc bạn một ngày thật vui và thật nhiều niềm vui!
+    </p>
+    <span class="big">Bye bye! 👋</span>
+  </section>
+
+</main>
+
+<footer>Bài bai 👋 — Trang "Thế giới của con" 💚</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  /* quả bóng nhảy khi bấm */
+  const ball = document.getElementById("ball");
+  ball.addEventListener("click", () => {
+    ball.classList.remove("bounce");
+    void ball.offsetWidth;           /* restart animation */
+    ball.classList.add("bounce");
+  });
+  ball.addEventListener("animationend", () => ball.classList.remove("bounce"));
+
+  /* ô tên: tự lưu lại */
+  const nameField = document.getElementById("nameField");
+  const KEY = "theGioiCuaCon.ten";
+  try {
+    const saved = localStorage.getItem(KEY);
+    if (saved) nameField.textContent = saved;
+  } catch (e) {}
+
+  nameField.addEventListener("input", () => {
+    try { localStorage.setItem(KEY, nameField.textContent.trim()); } catch (e) {}
+  });
+
+  /* Enter trong ô tên thì ra ngoài (không xuống dòng) */
+  nameField.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); nameField.blur(); }
+  });
+})();
+</script>
+</body>
+</html>
