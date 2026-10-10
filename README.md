@@ -1,24 +1,22 @@
-# Popcat Vui Nhộn
+# Thế Giới Của Con
 
-Trò chơi Popcat mini với mèo Oatmeal: bấm nhanh để ghi điểm, mở khóa các mốc đổi màu và lưu kỷ lục ngay trên trình duyệt.
+Một trang web cá nhân vui nhộn để giới thiệu về bản thân, sở thích và ước mơ. Giao diện được thiết kế thân thiện với trẻ em, có hiệu ứng trang trí và hỗ trợ màn hình máy tính lẫn điện thoại.
 
-## Cách chơi
+## Nội dung
 
-- Nhấn hoặc chạm vào mèo để cộng 1 điểm mỗi lần.
-- Bạn cũng có thể dùng phím bất kỳ trên bàn phím.
-- Điểm đổi màu ở các mốc 100, 250, 500, 1.000, 2.500, 5.000 và 10.000.
-- Chọn nút âm thanh để bật hoặc tắt tiếng Pop.
-- Chọn nút đặt lại để kết thúc lượt và lưu điểm vào bảng Top 5.
-- Dùng nút **Xóa kỷ lục** để xóa bảng điểm và kỷ lục cá nhân.
+- **Giới thiệu:** lời chào và giới thiệu về trang web.
+- **Tên và sở thích:** nhập tên trực tiếp trên trang; các sở thích gồm đá bóng, chơi game và đi ngủ.
+- **Điều con thích:** bấm vào quả bóng để xem hiệu ứng nhảy.
+- **Ước mơ:** chia sẻ những điều con muốn làm trong tương lai.
+- **Lời chào:** lời cảm ơn khách ghé thăm.
 
-Điểm cao nhất, bảng Top 5 và tùy chọn âm thanh được lưu trong `localStorage` của trình duyệt hiện tại.
+Tên đã nhập được lưu trong `localStorage` của trình duyệt trên thiết bị hiện tại và tự điền lại khi mở trang lần sau.
 
-## Chạy trò chơi
+## Chạy trang web
 
-Không cần cài đặt hoặc build. Mở `index.html` trực tiếp trong trình duyệt, hoặc phục vụ thư mục này bằng một máy chủ web tĩnh.
+Không cần cài đặt hoặc build. Mở [`the-gioi-cua-con.html`](./the-gioi-cua-con.html) trực tiếp bằng trình duyệt. Nếu muốn chạy qua máy chủ web tĩnh, hãy phục vụ thư mục dự án rồi mở tệp trên trong trình duyệt.
 
 ## Công nghệ
 
 - HTML, CSS và JavaScript thuần trong một tệp.
-- Hình mèo SVG và hiệu ứng âm thanh được tạo trực tiếp trong trình duyệt.
-- Thiết kế responsive, hỗ trợ máy tính và thiết bị cảm ứng.
+- Không cần thư viện hay dịch vụ bên ngoài.
